@@ -1,28 +1,23 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="tag.jsp" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-
+    <link rel="icon" href="images/FINN.ico">
     <title>学生宿舍管理系统</title>
-
-    <!-- Bootstrap core CSS -->
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/json2.js"></script>
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
     <link href="css/dashboard.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
-    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-
-    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
+    <script language="JavaScript" src="js/showOrder.js"></script>
     <script type="text/javascript">
         function logout(){
             if(!confirm("真的要退出吗？")){
@@ -78,8 +73,41 @@
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h2 class="sub-header">维修信息</h2>
+
+            <form class="form-horizontal clearfix" role="form"
+                  action="${pageContext.request.contextPath}/AdminGuaranteeServlet" method="post" id="searchForm">
+                <input type="hidden" name="method" value="search">
+                <div class="clearfix sub-header">
+                    <input type="hidden" name="method" value="list">
+                    <div class="form-grou">
+                        <label class="control-label">姓名</label>
+                        <div class="col-lg-4">
+                            <input type="text" value="${sessionScope.guaFilter['stuName']}" class="form-control"
+                                   placeholder="输入学生姓名" name="stuNameSearch">
+                        </div>
+                    </div>
+                    <div class="form-grou">
+                        <label class="control-label">宿舍号</label>
+                        <div class="col-lg-4">
+                            <select name="dormIdSearch" class="form-control">
+                                <option value="">请选择</option>
+                                <c:forEach items="${dorms}" var="dorm">
+                                    <option value="${dorm.id}"
+                                            <c:if test="${sessionScope.guaFilter['dormId']==dorm.id}">selected="selected"</c:if>>${dorm.number}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group form-grou" style="float: right">
+                        <div>
+                            <input type="submit" class="btn btn-default" value="查询"/>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped" id="guaTab">
                     <thead>
                     <tr>
                         <th>宿舍号</th>
@@ -89,6 +117,7 @@
                         <th>报修人电话号码</th>
                         <th>维修日期</th>
                         <th>维修状态</th>
+                        <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -100,71 +129,69 @@
                             <td>${guarantees.reason}</td>
                             <td>${guarantees.phoneid}</td>
                             <td>${guarantees.guaranteetime}</td>
-                            <td>${guarantees.guaranteestaus}</td>
+                            <td class="status${guarantees.goodsname}${guarantees.dorm.id}">
+                                <c:if test="${guarantees.guaranteestaus=='0'}">未维修</c:if>
+                                <c:if test="${guarantees.guaranteestaus=='1'}">维修完成</c:if>
+                            </td>
+                            <td>
+                                <button type="button" id="collBtn"
+                                        onclick="finshGua(this.parentNode.parentNode.rowIndex,'${guarantees.goodsname}','${guarantees.dorm.id}');"
+                                        class="btn btn-primary btn-xs" <c:if test="${guarantees.guaranteestaus=='1'}">disabled</c:if>>完成
+                                </button>
+                                <button type="button" id="delBtn"
+                                        onclick="delGua(this.parentNode.parentNode.rowIndex,'${guarantees.dorm.id}','${guarantees.studentname}','${guarantees.goodsname }');"
+                                        class="btn btn-danger btn-xs">移除
+                                </button>
+                            </td>
                         </tr>
                     </c:forEach>
                     </tbody>
                 </table>
             </div>
-
-            <form class="form-horizontal" role="form" action="${pageContext.request.contextPath}/AdminGuaranteeServlet" method="post">
-                <input type="hidden" name="per" value="ser">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">宿舍号</label>
-                    <div class="col-lg-4">
-                        <select name="dormitoryid" class="form-control">
-                            <option value="">请选择</option>
-                            <c:forEach items="${dorms}" var="dorm">
-                                <option value="${dorm.id}">${dorm.number}</option>
-                            </c:forEach>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">报修人姓名</label>
-                    <div class="col-lg-4">
-                        <input type="text" class="form-control" placeholder="输入报修人姓名" name="studentname">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">物品名称</label>
-                    <div class="col-lg-4">
-                        <input type="text" class="form-control" placeholder="输入报修物品" name="goodsname">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">报修原因</label>
-                    <div class="col-lg-4">
-                        <input type="text" class="form-control" placeholder="输入报修原因" name="reason">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">报修人电话号码</label>
-                    <div class="col-lg-4">
-                        <input type="text" class="form-control" placeholder="输入报修电话号码" name="phoneid">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">维修时间</label>
-                    <div class="col-lg-4">
-                        <input type="text" class="form-control" placeholder="输入报修时间" name="guaranteetime">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">维修状态</label>
-                    <div class="col-lg-4">
-                        <input type="text" class="form-control" placeholder="输入维修状态" name="guaranteestaus">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default">提交</button>
-                    </div>
-                </div>
-            </form>
         </div>
     </div>
 </div>
+<script>
+    //维修完成按钮
+    function finshGua(rowIndex,goodsName,dormId) {
+        // alert(rowIndex+","+stuName+","+dormId);
+        $.ajax({
+            type:"GET",
+            url:"AdminGuaranteeServlet?method=modify",
+            data:"goodsName="+goodsName+"&dormId="+dormId,
+            success:function (data) {
+                data = JSON.parse(data);
+                var result = data.result;
+                if (result){
+                    alert("修改成功");
+                    $(".status"+goodsName+dormId).text("维修完成");
+                }else{
+                    alert("修改失败");
+                }
+            }
+        });
+
+    }
+    //删除记录按钮
+    function delGua(rowIndex,dormId,stuName,goodsName) {
+        // alert(rowIndex+","+stuName+","+dormId+","+goodsName);
+        $.ajax({
+            type:"GET",
+            url:"AdminGuaranteeServlet?method=del",
+            data:"goodsName="+goodsName+"&dormId="+dormId+"&stuName="+stuName,
+            success:function (data) {
+                data = JSON.parse(data);
+                var result = data.result;
+                if (result){
+                    $("#guaTab").get(0).deleteRow(rowIndex);
+                    alert("删除成功");
+                }else{
+                    alert("删除失败");
+                }
+            }
+        });
+    }
+</script>
 </body>
 </html>
 

@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-
+    <link rel="icon" href="images/FINN.ico">
     <title>学生宿舍管理系统</title>
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/json2.js"></script>
@@ -142,7 +142,7 @@
                                 <td>
                                     <button type="button" id="collBtn"
                                             onclick="collExpr(this.parentNode.parentNode.rowIndex,'${express.studentname}','<fmt:formatDate value="${express.arrivetime}" pattern="yyyy-MM-dd HH:mm"/>');"
-                                            class="btn btn-primary btn-xs">取件
+                                            class="btn btn-primary btn-xs" <c:if test="${not empty express.collectname }">disabled</c:if>>取件
                                     </button>
                                     <button type="button" id="delBtn"
                                             onclick="delExpr(this.parentNode.parentNode.rowIndex,'${express.studentname}','<fmt:formatDate value="${express.arrivetime}" pattern="yyyy-MM-dd HH:mm"/>');"

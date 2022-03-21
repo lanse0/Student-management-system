@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class GuaranteeDao {
     // 得到所有维修信息
@@ -38,16 +39,63 @@ public class GuaranteeDao {
         }
         return  guarantees;
     }
-    // 修改维修信息
-    public void modify(guarantee guarantee) throws SQLException, ClassNotFoundException {
-        Connection conn = DBUtils.getConnection();
-        String sql = "update guarantee set guaranteetime = ?, guaranteestaus = ? where dormitoryid = ? and goodsname = ?";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setDate(1,new java.sql.Date(guarantee.getGuaranteetime().getTime()) );
-        pstmt.setString(2,guarantee.getGuaranteestaus());
-        pstmt.setInt(3,guarantee.getDorm().getId());
-        pstmt.setString(4, guarantee.getGoodsname());
-        pstmt.executeUpdate();
+
+    //根据条件查询维修信息
+    public ArrayList<guarantee> getGuaranteesBySearch(Map filter,String dormBuild){
+        String sql = "select * from guarantee g,dorm d where g.dormitoryid=d.id and build = ?";
+        if(filter.get("stuName")!=null){
+            sql+=" and studentname like '%"+filter.get("stuName")+"%'";
+        }
+        if(filter.get("dormId")!=null){
+            sql+=" and dormitoryid = "+filter.get("dormId");
+        }
+        ArrayList<guarantee> guaranteeArrayList = new ArrayList<guarantee>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DBUtils.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1,dormBuild);
+            rs = pstmt.executeQuery();
+            while (rs.next())
+            {
+                guarantee guarantee = new guarantee();
+                guarantee.setStudentname(rs.getString("studentname"));
+                    Dorm dorm = new Dorm();
+                    dorm.setId(rs.getInt("dormitoryid"));
+                    dorm.setBuild(rs.getInt("build"));
+                    dorm.setNumber(rs.getInt("number"));
+                    dorm.setStatus(rs.getString("status"));
+                    guarantee.setDorm(dorm);
+                guarantee.setGoodsname(rs.getString("goodsname"));
+                guarantee.setReason(rs.getString("reason"));
+                guarantee.setGuaranteetime(rs.getDate("guaranteetime"));
+                guarantee.setPhoneid(rs.getString("phoneid"));
+                guarantee.setGuaranteestaus(rs.getString("guaranteestaus"));
+                guaranteeArrayList.add(guarantee);
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            DBUtils.release(rs,pstmt,conn);
+        }
+        return guaranteeArrayList;
+    }
+
+    public boolean delete(int dormId,String stuName,String goodsName){
+        String sql = "delete from guarantee where dormitoryid = ? and studentname = ? and goodsname = ?";
+        Object[] params = {dormId,stuName,goodsName};
+        return DBUtils.executeUpdate(sql,params);
+    }
+
+    // 修改维修信息（维修完成）
+    public boolean modify(String goodsName,int dormId){
+        String sql = "update guarantee set guaranteetime = sysdate(), guaranteestaus = 1 where dormitoryid = ? and goodsname = ?";
+        Object[] params = {dormId,goodsName};
+        return DBUtils.executeUpdate(sql,params);
     }
     // 提交修改信息
     public void submit(guarantee guarantee) throws SQLException, ClassNotFoundException {
