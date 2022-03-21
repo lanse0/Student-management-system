@@ -43,7 +43,7 @@ public class AdminExpressServlet extends HttpServlet {
             case "del":
                 del(request, response);
                 break;
-            case "modify":
+            case "modify"://取件获取学生对象
                 modify(request, response);
                 break;
             default:
@@ -54,10 +54,10 @@ public class AdminExpressServlet extends HttpServlet {
     protected void modify(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String stuName = request.getParameter("stuName");
         String  arriveTime = request.getParameter("arriveTime");
-
+        express express = expressDao.getExprByColl(stuName,arriveTime);
         PrintWriter out = response.getWriter();
         JSONObject jobj = new JSONObject();
-
+        jobj.element("express",express);
         out.write(jobj.toString());
         out.flush();
         out.close();

@@ -184,6 +184,7 @@
             <form class="form-horizontal" role="form" action="${pageContext.request.contextPath}/AdminExpressServlet"
                   method="post">
                 <input type="hidden" name="method" value="exp">
+                <div id="arrBox">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">姓名</label>
                     <div class="col-lg-4">
@@ -208,53 +209,75 @@
                                name="arrivetime">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">收件时间</label>
-                    <div class="col-lg-4">
-                        <input type="datetime-local" id="collect" class="form-control" placeholder="输入收件时间"
-                               name="collecttime">
-                    </div>
-                </div>
+
                 <div class="form-group">
                     <label class="col-sm-2 control-label">快件数量</label>
                     <div class="col-lg-4">
                         <input type="text" id="collectNum" class="form-control" placeholder="输入快件数量" name="collectnum">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">取件人姓名</label>
-                    <div class="col-lg-4">
-                        <input type="text" id="collectName" class="form-control" placeholder="输入取件人姓名"
-                               name="collectname">
+
+                </div>
+
+                <div id="collBox" style="display: none">
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">收件时间</label>
+                        <div class="col-lg-4">
+                            <input type="datetime-local" id="collect" class="form-control" placeholder="输入收件时间"
+                                   name="collecttime">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">取件人姓名</label>
+                        <div class="col-lg-4">
+                            <input type="text" id="collectName" class="form-control" placeholder="输入取件人姓名"
+                                   name="collectname">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">取件人电话</label>
+                        <div class="col-lg-4">
+                            <input type="text" id="collectPhone" class="form-control" placeholder="输入取件人电话"
+                                   name="collectphoneid">
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">取件人电话</label>
-                    <div class="col-lg-4">
-                        <input type="text" id="collectPhone" class="form-control" placeholder="输入取件人电话"
-                               name="collectphoneid">
-                    </div>
-                </div>
+
                 <div class="form-group">
                     <div class="col-sm-offset-2  col-sm-10">
-                        <button type="submit" class="btn btn-default" name="submit" value="submit"
+                        <button type="submit" id="arrBtn" class="btn btn-default" name="submit" value="submit"
                                 onclick="return sub()">入库
                         </button>
-                        <button type="submit" class="btn btn-default" name="submit" value="modify"
+                        <button type="submit" id="collButt" style="display: none" class="btn btn-default" name="submit" value="modify"
                                 onclick="return modify()">取件
                         </button>
                     </div>
                 </div>
-
             </form>
         </div>
     </div>
 </div>
 <script>
-    function collExpr(stuName, arriveTime) {
-
+    //取件
+    function collExpr(rowIndex, stuName, arriveTime) {
+        $.ajax({
+            type: "POST",
+            url:"AdminExpressServlet?method=modify",
+            data: "stuName=" + stuName + "&arriveTime=" + arriveTime,
+            success:function (data) {
+                data = JSON.parse(data);
+                var expr = data.express;
+                $("#stuName").val(expr.studentname);
+                $("#dorm").val(expr.dorm.id);
+                $("#arrBox").css({"display":"none"});
+                $("#collBox").css({"display":"block"});
+                $("#arrBtn").css({"display":"none"});
+                $("#collButt").css({"display":"block"});
+            }
+        });
     }
-
+    //移除快件
     function delExpr(rowIndex, stuName, arriveTime) {
         // alert(rowIndex + "," + stuName + "," + arriveTime);
         // var exprTable = document.getElementById("exprTable");
@@ -277,6 +300,7 @@
         });
     }
 
+    //翻页
     function subSearchForm(n) {
         var curr = $("#currPage").val();
         // alert(curr);
@@ -300,6 +324,7 @@
         return false;
     }
 
+    //入库取件表单验证
     var stuName = document.getElementById("stuName");
     var dorm = document.getElementById("dorm");
     var arrive = document.getElementById("arrive");
@@ -333,16 +358,6 @@
     }
 
     function modify() {
-        if (stuName.value == "") {
-            alert("请输入姓名");
-            stuName.focus();
-            return false;
-        }
-        if (dorm.value == "") {
-            alert("请选择宿舍");
-            dorm.focus();
-            return false;
-        }
         if (collect.value == "") {
             alert("请输入取件时间");
             collect.focus();

@@ -71,9 +71,9 @@ public class ExpressDao {
         Object[] params = {stuName,arriveTime};
         return DBUtils.executeUpdate(sql,params);
     }
-
+    //根据学生姓名和宿舍获取学生对象
     public express getExprByColl(String stuName,String arriveTime){
-        String sql = "SELECT * FROM express where studentname=? and DATE_FORMAT( arrivetime, '%Y-%m-%d %H:%i' ) = ?";
+        String sql = "select * from express e,dorm d where e.dormitoryid=d.id and studentname=? and DATE_FORMAT( arrivetime, '%Y-%m-%d %H:%i' ) = ?";
         express express = null;
         Connection conn = null;
         PreparedStatement pstmt = null;
