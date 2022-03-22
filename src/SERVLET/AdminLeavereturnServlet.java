@@ -42,9 +42,6 @@ public class AdminLeavereturnServlet extends HttpServlet {
             case "list":
                 list(request, response);
                 break;
-            case "del":
-                del(request, response);
-                break;
             case "modify"://取件获取学生对象
                 modify(request, response);
                 break;
@@ -83,9 +80,6 @@ public class AdminLeavereturnServlet extends HttpServlet {
         request.getRequestDispatcher("admin_student_leavereturn.jsp").forward(request, response);
     }
 
-    protected void del(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    }
     protected void modify(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String stuName = request.getParameter("stuName");
         String leaveTime = request.getParameter("leavetime");

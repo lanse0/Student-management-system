@@ -129,11 +129,7 @@
                                 <td>
                                     <button type="button" id="collBtn"
                                             onclick="modifyLea(this.parentNode.parentNode.rowIndex,'${leavereturns.studentname}','<fmt:formatDate value="${leavereturns.leavetime}" pattern="yyyy-MM-dd HH:mm"/>');"
-                                            class="btn btn-primary btn-xs">修改
-                                    </button>
-                                    <button type="button" id="delBtn"
-                                            onclick="delLea(this.parentNode.parentNode.rowIndex,'${leavereturns.studentname}','<fmt:formatDate value="${leavereturns.leavetime}" pattern="yyyy-MM-dd HH:mm"/>');"
-                                            class="btn btn-danger btn-xs">移除
+                                            class="btn btn-primary btn-xs">修 改
                                     </button>
                                 </td>
                             </tr>
@@ -236,7 +232,7 @@
             return true;
         } else {
             if (n == 2) {
-                $("#currPage").val(${sessionScope.exprPage.totalPage });
+                $("#currPage").val(${sessionScope.leaPage.totalPage });
                 // alert($("#currPage").val());
                 return true;
             } else {

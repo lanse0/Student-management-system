@@ -63,7 +63,10 @@ public class AdminLoginServlet extends HttpServlet {
                         //得到楼栋信息
                         String dormbuildid = rs.getString("dormbuildid");
                         // 得到所有寝室成员的信息
-                        ArrayList<student> students = studentDao.getAllStudents(dormbuildid);
+                        PageUtils stuPage = new PageUtils();
+                        stuPage.setTotalSize(studentDao.getCountBySearch(new student(),dormbuildid));
+                        stuPage.setTotalPage(studentDao.getCountBySearch(new student(),dormbuildid));
+                        ArrayList<student> students = studentDao.getStudentBySearch(new student(),stuPage,dormbuildid);
                         // 得到第一页快件,页码对象
                         PageUtils exprPage = new PageUtils();
                         exprPage.setTotalSize(expressDao.getCountBySearch(new HashMap(),dormbuildid));
@@ -76,8 +79,11 @@ public class AdminLoginServlet extends HttpServlet {
                         leaPage.setTotalSize(leavereturnDao.getCountBySearch(new HashMap(),dormbuildid));
                         leaPage.setTotalPage(leavereturnDao.getCountBySearch(new HashMap(),dormbuildid));
                         ArrayList<leavereturn>  leavereturns = leavereturnDao.getLeaverBySearch(new HashMap(),new PageUtils(),dormbuildid);
-                        // 得到所有的晚归记录
-                        ArrayList<laterecord>   laterecords = laterecordDao.getAllLaterecords(dormbuildid);
+                        // 得到第一页晚归记录分页信息
+                        PageUtils latPage = new PageUtils();
+                        latPage.setTotalSize(laterecordDao.getCountBySearch(new HashMap(),dormbuildid));
+                        latPage.setTotalPage(laterecordDao.getCountBySearch(new HashMap(),dormbuildid));
+                        ArrayList<laterecord>   laterecords = laterecordDao.getLaterBySearch(new HashMap(),new PageUtils(),dormbuildid);
                         // 得到所有的水电费信息
                         ArrayList<fee>   fees = feeDao.getAllFee(dormbuildid);
 
@@ -88,12 +94,14 @@ public class AdminLoginServlet extends HttpServlet {
                         request.getSession().setAttribute("dormadminname",dormadminname);
                         request.getSession().setAttribute("dormbuildid",dormbuildid);
                         request.getSession().setAttribute("students",students);
+                        request.getSession().setAttribute("stuPage",stuPage);
                         request.getSession().setAttribute("expresses",expresses);
                         request.getSession().setAttribute("exprPage",exprPage);
                         request.getSession().setAttribute("guarantees",guarantees);
                         request.getSession().setAttribute("leavereturns",leavereturns);
                         request.getSession().setAttribute("leaPage",leaPage);
                         request.getSession().setAttribute("laterecords",laterecords);
+                        request.getSession().setAttribute("latPage",latPage);
                         request.getSession().setAttribute("fees",fees);
                         request.getSession().setAttribute("dorms",dorms);
 

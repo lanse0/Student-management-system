@@ -16,7 +16,6 @@
     <link href="css/dashboard.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
     <script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
     <script language="JavaScript" src="js/showOrder.js"></script>
     <script type="text/javascript">
         function logout() {

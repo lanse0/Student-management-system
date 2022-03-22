@@ -3,7 +3,7 @@ package DAO;
 import JAVABEAN.Dorm;
 import JAVABEAN.student;
 import JDBC.DBUtils;
-import sun.security.pkcs11.Secmod;
+import UTIL.PageUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -244,6 +244,135 @@ public class StudentDao {
             System.out.println("username :" + rs.getString("username"));
 
             students.add(student);
+        }
+        return students;
+    }
+
+    // 根据条件查询总记录数
+    public int getCountBySearch(student stu, String dormBuild){
+        int totalSize = 0;
+        String sql = "select count(*) total from student s, dorm d where s.dormitoryid = d.id and d.build = "+dormBuild;
+
+        String studentid = stu.getStudentid();
+        String studentname = stu.getStudentname();
+        String major = stu.getMajor();
+        String department = stu.getDepartment();
+        String classes = stu.getClasses();
+        Dorm dormitoryid = stu.getDorm();
+        String phoneid = stu.getPhoneid();
+
+        if (studentid != null && !"".equals(studentid)) {
+            sql += " and studentid like '%"+studentid+"%'";
+        }
+        if (studentname != null && !"".equals(studentname)) {
+            sql += " and studentname like '%"+studentname+"%";
+        }
+        if (major != null && !"".equals(major)) {
+            sql += " and major like '%"+major+"%'";
+        }
+        if (department != null && !"".equals(department)) {
+            sql += " and department like '%"+department+"%'";
+        }
+        if (classes != null && !"".equals(classes)) {
+            sql += " and classes like '%"+classes+"%'";
+        }
+        if (dormitoryid != null) {
+            sql += " and s.dormitoryid = "+dormitoryid.getId();
+        }
+        if (phoneid != null && !"".equals(phoneid)) {
+            sql += " and phoneid like '%"+phoneid+"%'";
+        }
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DBUtils.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                totalSize = rs.getInt("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBUtils.release(rs, pstmt, conn);
+        }
+
+        return totalSize;
+    }
+
+    // 根据用户名跟时间、宿舍查询快件 翻页
+    public ArrayList<student> getStudentBySearch(student stu, PageUtils page, String dormBuild) {
+        String sql = "select * from student s, dorm d where s.dormitoryid = d.id and d.build = "+dormBuild;
+        ArrayList<student> students = new ArrayList<student>();
+
+        String studentid = stu.getStudentid();
+        String studentname = stu.getStudentname();
+        String major = stu.getMajor();
+        String department = stu.getDepartment();
+        String classes = stu.getClasses();
+        Dorm dormitoryid = stu.getDorm();
+        String phoneid = stu.getPhoneid();
+
+        if (studentid != null && !"".equals(studentid)) {
+            sql += " and studentid like '%"+studentid+"%'";
+        }
+        if (studentname != null && !"".equals(studentname)) {
+            sql += " and studentname like '%"+studentname+"%";
+        }
+        if (major != null && !"".equals(major)) {
+            sql += " and major like '%"+major+"%'";
+        }
+        if (department != null && !"".equals(department)) {
+            sql += " and department like '%"+department+"%'";
+        }
+        if (classes != null && !"".equals(classes)) {
+            sql += " and classes like '%"+classes+"%'";
+        }
+        if (dormitoryid != null) {
+            sql += " and s.dormitoryid = "+dormitoryid.getId();
+        }
+        if (phoneid != null && !"".equals(phoneid)) {
+            sql += " and phoneid like '%"+phoneid+"%'";
+        }
+        sql+=" order by d.id desc limit ?,?";
+        System.out.println(sql);
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DBUtils.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1,(page.getCurrPage()-1)*page.getPageSize());
+            pstmt.setInt(2,page.getPageSize());
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                student student = new student();
+                student.setStudentid(rs.getString("studentid"));
+                student.setStudentname(rs.getString("studentname"));
+                student.setGender(rs.getString("gender"));
+                student.setMajor(rs.getString("major"));
+                student.setDepartment(rs.getString("department"));
+                student.setClasses(rs.getString("classes"));
+                    Dorm dorm = new Dorm();
+                    dorm.setId(rs.getInt("dormitoryid"));
+                    dorm.setBuild(rs.getInt("build"));
+                    dorm.setNumber(rs.getInt("number"));
+                    dorm.setStatus(rs.getString("status"));
+                student.setDorm(dorm);
+                student.setPhoneid(rs.getString("phoneid"));
+                student.setEntrytime(rs.getDate("entrytime"));
+                student.setUsername(rs.getString("username"));
+                student.setPassword(rs.getString("password"));
+
+                System.out.println("username :" + rs.getString("username"));
+
+                students.add(student);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBUtils.release(rs, pstmt, conn);
         }
         return students;
     }
