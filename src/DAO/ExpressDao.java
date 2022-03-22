@@ -5,9 +5,11 @@ import JAVABEAN.express;
 import JDBC.DBUtils;
 import UTIL.PageUtils;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.DoubleSummaryStatistics;
 import java.util.Map;
 
 public class ExpressDao {
@@ -18,33 +20,6 @@ public class ExpressDao {
         String sql = "select * from express e,dorm d where e.dormitoryid=d.id and studentname = ?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, studentname);
-        ResultSet rs = pstmt.executeQuery();
-        while (rs.next()) {
-            express exp = new express();
-            exp.setStudentname(rs.getString("studentname"));
-            Dorm dormitoryid = new Dorm();
-            dormitoryid.setId(rs.getInt("dormitoryid"));
-            dormitoryid.setBuild(rs.getInt("build"));
-            dormitoryid.setNumber(rs.getInt("number"));
-            dormitoryid.setStatus(rs.getString("status"));
-            exp.setDorm(dormitoryid);
-            exp.setArrivetime(rs.getTimestamp("arrivetime"));
-            exp.setCollecttime(rs.getTimestamp("collecttime"));
-            exp.setCollectnum(rs.getInt("collectnum"));
-            exp.setCollectname(rs.getString("collectname"));
-            exp.setCollectphoneid(rs.getString("collectphoneid"));
-            expresses.add(exp);
-        }
-        return expresses;
-    }
-
-    // 得到楼栋所有快件信息
-    public ArrayList<express> getAllExpress(String dormBuild) throws SQLException, ClassNotFoundException {
-        ArrayList<express> expresses = new ArrayList<>();
-        Connection conn = DBUtils.getConnection();
-        String sql = "select * from express e, dorm d where e.dormitoryid=d.id and d.build=?";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setString(1, dormBuild);
         ResultSet rs = pstmt.executeQuery();
         while (rs.next()) {
             express exp = new express();

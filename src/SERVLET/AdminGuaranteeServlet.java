@@ -40,7 +40,7 @@ public class AdminGuaranteeServlet extends HttpServlet {
             case "search"://查找保修信息
                 search(request, response);
                 break;
-            case "del"://查找保修信息
+            case "del":
                 try {
                     del(request, response);
                 } catch (Exception e) {

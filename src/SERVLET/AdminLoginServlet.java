@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @WebServlet(name = "AdminLoginServlet")
 public class AdminLoginServlet extends HttpServlet {
@@ -72,8 +71,11 @@ public class AdminLoginServlet extends HttpServlet {
                         ArrayList<express> expresses =  expressDao.getExpressBySearch(new HashMap(),new PageUtils(),dormbuildid);
                         // 得到所有维修信息
                         ArrayList<guarantee> guarantees = guaranteeDao.getAllguarantee(dormbuildid);
-                        // 得到所有离校返校信息
-                        ArrayList<leavereturn>  leavereturns = leavereturnDao.getAllLeavereturn(dormbuildid);
+                        // 得到所有离校返校信息 分页信息
+                        PageUtils leaPage = new PageUtils();
+                        leaPage.setTotalSize(leavereturnDao.getCountBySearch(new HashMap(),dormbuildid));
+                        leaPage.setTotalPage(leavereturnDao.getCountBySearch(new HashMap(),dormbuildid));
+                        ArrayList<leavereturn>  leavereturns = leavereturnDao.getLeaverBySearch(new HashMap(),new PageUtils(),dormbuildid);
                         // 得到所有的晚归记录
                         ArrayList<laterecord>   laterecords = laterecordDao.getAllLaterecords(dormbuildid);
                         // 得到所有的水电费信息
@@ -90,6 +92,7 @@ public class AdminLoginServlet extends HttpServlet {
                         request.getSession().setAttribute("exprPage",exprPage);
                         request.getSession().setAttribute("guarantees",guarantees);
                         request.getSession().setAttribute("leavereturns",leavereturns);
+                        request.getSession().setAttribute("leaPage",leaPage);
                         request.getSession().setAttribute("laterecords",laterecords);
                         request.getSession().setAttribute("fees",fees);
                         request.getSession().setAttribute("dorms",dorms);
