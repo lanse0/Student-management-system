@@ -75,10 +75,8 @@ public class GuaranteeDao {
                 guarantee.setGuaranteestaus(rs.getString("guaranteestaus"));
                 guaranteeArrayList.add(guarantee);
             }
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         } finally {
             DBUtils.release(rs,pstmt,conn);
         }
@@ -115,7 +113,7 @@ public class GuaranteeDao {
     public ArrayList<guarantee> getGuaranteesByDormitoryid(Dorm dormitoryid) throws SQLException, ClassNotFoundException {
         ArrayList<guarantee> guarantees = new ArrayList<>();
         Connection conn = DBUtils.getConnection();
-        String sql = "select * from guarantee g,dorm d where g.dormitoryid=d.id and dormitoryid = ?";
+        String sql = "select * from guarantee g,dorm d where g.dormitoryid=d.id and dormitoryid = ? order by guaranteestaus asc";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setInt(1, dormitoryid.getId());
         ResultSet rs = pstmt.executeQuery();

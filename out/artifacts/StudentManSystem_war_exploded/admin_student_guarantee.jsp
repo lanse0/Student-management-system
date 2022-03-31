@@ -39,6 +39,17 @@
         <div class="navbar-header">
             <a class="navbar-brand text-primary" href="index.jsp">学生宿舍管理系统(${sessionScope.dormbuildid}栋)</a>
         </div>
+        <%--        手机端导航栏--%>
+        <div class="navbar-toggle collapsed" style="float: left">
+            <ul>
+                <li>
+                    <a href="#">正在登陆的用户为：${sessionScope.dormadminname}(宿管)</a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/LoginOutServlet" onclick="return logout()">退出</a>
+                </li>
+            </ul>
+        </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav justify-content-end">
                 <li class="nav-item active">

@@ -1,21 +1,20 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="StudentManSystem:war exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/StudentManSystem_war_exploded</output-path>
-    <root id="root">
+  <artifact type="war" name="StudentManagement">
+    <output-path>$PROJECT_DIR$/out/artifacts/StudentManagement</output-path>
+    <root id="archive" name="StudentManagement.war">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="StudentManSystem" />
         </element>
         <element id="directory" name="lib">
+          <element id="library" level="project" name="commons-collections-3.2" />
           <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/lib/mysql-connector-java-8.0.15.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/lib/standard.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/lib/jstl.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/lib/gson-2.2.4.jar" />
-          <element id="library" level="project" name="commons-collections-3.2" />
-          <element id="module-output" name="StudentManSystem" />
         </element>
       </element>
-      <element id="javaee-facet-resources" facet="StudentManSystem/web/Web" />
+      <element id="dir-copy" path="$PROJECT_DIR$/web" />
     </root>
   </artifact>
 </component>

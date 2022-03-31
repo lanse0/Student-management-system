@@ -121,13 +121,13 @@ public class AdminLeavereturnServlet extends HttpServlet {
 
         ArrayList<leavereturn> leavereturns = new ArrayList<>();
         try {
-            if(button.equals("提交"))
+            if(button.equals("submit"))
             {
                 leavereturnDao.submit(leavereturn);
-            } else if(button.equals("修改")){
+            } else if(button.equals("modify")){
                 leavereturnDao.modify(leavereturn);
             }
-            leavereturns = leavereturnDao.getAllLeavereturn(dormBuild);
+            leavereturns = leavereturnDao.getLeaverBySearch(new HashMap(),new PageUtils(),dormBuild);
         } catch (SQLException | ClassNotFoundException throwables) {
             throwables.printStackTrace();
         }

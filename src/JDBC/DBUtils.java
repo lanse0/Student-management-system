@@ -13,6 +13,13 @@ public class DBUtils {
 		String password = "123456";
 		Connection conn = DriverManager.getConnection(url, username, password);
 		return conn;
+		//部署服务器用户密码 账号
+//		Class.forName("com.mysql.cj.jdbc.Driver"); // mysql8 驱动改名
+//		String url = "jdbc:mysql://120.76.41.175:3306/stumansys?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai";
+//		String username = "root";
+//		String password = "Lanse100!";
+//		Connection conn = DriverManager.getConnection(url, username, password);
+//		return conn;
 	}
 
 	// 公共的增删改方法

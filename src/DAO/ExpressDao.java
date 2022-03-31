@@ -17,7 +17,7 @@ public class ExpressDao {
     public ArrayList<express> getExpressesByStudentname(String studentname) throws SQLException, ClassNotFoundException {
         ArrayList<express> expresses = new ArrayList<>();
         Connection conn = DBUtils.getConnection();
-        String sql = "select * from express e,dorm d where e.dormitoryid=d.id and studentname = ?";
+        String sql = "select * from express e,dorm d where e.dormitoryid=d.id and studentname = ? order by arrivetime desc";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, studentname);
         ResultSet rs = pstmt.executeQuery();

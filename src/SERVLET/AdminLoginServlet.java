@@ -26,19 +26,19 @@ public class AdminLoginServlet extends HttpServlet {
         String code = request.getParameter("code");
         String checkCode = (String) request.getSession().getAttribute("validateCode");
         //判断用户名、密码是否为空
-        if("".equals(username)||username.length()==0){
-            request.setAttribute("NAMEMSG","用户名为空!");
+        if ("".equals(username) || username.length() == 0) {
+            request.setAttribute("NAMEMSG", "用户名为空!");
             request.getRequestDispatcher("admin_login.jsp").forward(request, response);
         }
-        if("".equals(password)||password.length()==0) {
+        if ("".equals(password) || password.length() == 0) {
             request.setAttribute("PWDMSG", "密码为空!");
             request.getRequestDispatcher("admin_login.jsp").forward(request, response);
         }
-        if("".equals(code)||code.length()==0) {
+        if ("".equals(code) || code.length() == 0) {
             request.setAttribute("CODMSG", "验证码为空!");
             request.getRequestDispatcher("admin_login.jsp").forward(request, response);
         }
-        if(checkCode.equals(code)){
+        if (checkCode.equals(code)) {
             AdminDao adminDao = new AdminDao();
             StudentDao studentDao = new StudentDao();
             ExpressDao expressDao = new ExpressDao();
@@ -50,85 +50,91 @@ public class AdminLoginServlet extends HttpServlet {
             try {
 
                 ResultSet rs = adminDao.selectAdmin(username);
-                if(rs.next()){
-                    if(password.equals(rs.getString("password"))){
+                if (rs.next()) {
+                    if (password.equals(rs.getString("password"))) {
                         //登陆成功
                         //将用户admin存入session域
                         dormadmin admin = new dormadmin();
                         admin.setUsername(username);
                         admin.setPassword(password);
-                        request.getSession().setAttribute("dormadmin",admin);
+                        request.getSession().setAttribute("dormadmin", admin);
                         // 得到管理员名字
                         String dormadminname = rs.getString("dormadminname");
                         //得到楼栋信息
                         String dormbuildid = rs.getString("dormbuildid");
                         // 得到所有寝室成员的信息
                         PageUtils stuPage = new PageUtils();
-                        stuPage.setTotalSize(studentDao.getCountBySearch(new student(),dormbuildid));
-                        stuPage.setTotalPage(studentDao.getCountBySearch(new student(),dormbuildid));
-                        ArrayList<student> students = studentDao.getStudentBySearch(new student(),stuPage,dormbuildid);
+                        stuPage.setTotalSize(studentDao.getCountBySearch(new student(), dormbuildid));
+                        stuPage.setTotalPage(studentDao.getCountBySearch(new student(), dormbuildid));
+                        ArrayList<student> students = studentDao.getStudentBySearch(new student(), stuPage, dormbuildid);
                         // 得到第一页快件,页码对象
                         PageUtils exprPage = new PageUtils();
-                        exprPage.setTotalSize(expressDao.getCountBySearch(new HashMap(),dormbuildid));
-                        exprPage.setTotalPage(expressDao.getCountBySearch(new HashMap(),dormbuildid));
-                        ArrayList<express> expresses =  expressDao.getExpressBySearch(new HashMap(),new PageUtils(),dormbuildid);
+                        exprPage.setTotalSize(expressDao.getCountBySearch(new HashMap(), dormbuildid));
+                        exprPage.setTotalPage(expressDao.getCountBySearch(new HashMap(), dormbuildid));
+                        ArrayList<express> expresses = expressDao.getExpressBySearch(new HashMap(), new PageUtils(), dormbuildid);
                         // 得到所有维修信息
                         ArrayList<guarantee> guarantees = guaranteeDao.getAllguarantee(dormbuildid);
                         // 得到所有离校返校信息 分页信息
                         PageUtils leaPage = new PageUtils();
-                        leaPage.setTotalSize(leavereturnDao.getCountBySearch(new HashMap(),dormbuildid));
-                        leaPage.setTotalPage(leavereturnDao.getCountBySearch(new HashMap(),dormbuildid));
-                        ArrayList<leavereturn>  leavereturns = leavereturnDao.getLeaverBySearch(new HashMap(),new PageUtils(),dormbuildid);
+                        leaPage.setTotalSize(leavereturnDao.getCountBySearch(new HashMap(), dormbuildid));
+                        leaPage.setTotalPage(leavereturnDao.getCountBySearch(new HashMap(), dormbuildid));
+                        ArrayList<leavereturn> leavereturns = leavereturnDao.getLeaverBySearch(new HashMap(), new PageUtils(), dormbuildid);
                         // 得到第一页晚归记录分页信息
                         PageUtils latPage = new PageUtils();
-                        latPage.setTotalSize(laterecordDao.getCountBySearch(new HashMap(),dormbuildid));
-                        latPage.setTotalPage(laterecordDao.getCountBySearch(new HashMap(),dormbuildid));
-                        ArrayList<laterecord>   laterecords = laterecordDao.getLaterBySearch(new HashMap(),new PageUtils(),dormbuildid);
+                        latPage.setTotalSize(laterecordDao.getCountBySearch(new HashMap(), dormbuildid));
+                        latPage.setTotalPage(laterecordDao.getCountBySearch(new HashMap(), dormbuildid));
+                        ArrayList<laterecord> laterecords = laterecordDao.getLaterBySearch(new HashMap(), new PageUtils(), dormbuildid);
                         // 得到所有的水电费信息
-                        ArrayList<fee>   fees = feeDao.getAllFee(dormbuildid);
+                        ArrayList feeYears = feeDao.getAllYear();    //获取所有学年信息
+                        PageUtils feePage = new PageUtils();
+                        feePage.setTotalSize(feeDao.getCountBySearch(new HashMap(), dormbuildid));
+                        feePage.setTotalPage(feeDao.getCountBySearch(new HashMap(), dormbuildid));
+                        ArrayList<fee> fees = feeDao.getFeeBySearch(new HashMap(), new PageUtils(), dormbuildid);
 
                         //得到当前楼栋所有宿舍信息
                         List<Dorm> dorms = dormDao.getAllDorm(Integer.parseInt(dormbuildid));
 
-                        request.getSession().setAttribute("admin",username);
-                        request.getSession().setAttribute("dormadminname",dormadminname);
-                        request.getSession().setAttribute("dormbuildid",dormbuildid);
-                        request.getSession().setAttribute("students",students);
-                        request.getSession().setAttribute("stuPage",stuPage);
-                        request.getSession().setAttribute("expresses",expresses);
-                        request.getSession().setAttribute("exprPage",exprPage);
-                        request.getSession().setAttribute("guarantees",guarantees);
-                        request.getSession().setAttribute("leavereturns",leavereturns);
-                        request.getSession().setAttribute("leaPage",leaPage);
-                        request.getSession().setAttribute("laterecords",laterecords);
-                        request.getSession().setAttribute("latPage",latPage);
-                        request.getSession().setAttribute("fees",fees);
-                        request.getSession().setAttribute("dorms",dorms);
+                        request.getSession().setAttribute("admin", username);
+                        request.getSession().setAttribute("dormadminname", dormadminname);
+                        request.getSession().setAttribute("dormbuildid", dormbuildid);
+                        request.getSession().setAttribute("students", students);
+                        request.getSession().setAttribute("stuPage", stuPage);
+                        request.getSession().setAttribute("expresses", expresses);
+                        request.getSession().setAttribute("exprPage", exprPage);
+                        request.getSession().setAttribute("guarantees", guarantees);
+                        request.getSession().setAttribute("leavereturns", leavereturns);
+                        request.getSession().setAttribute("leaPage", leaPage);
+                        request.getSession().setAttribute("laterecords", laterecords);
+                        request.getSession().setAttribute("latPage", latPage);
+                        request.getSession().setAttribute("fees", fees);
+                        request.getSession().setAttribute("feePage", feePage);
+                        request.getSession().setAttribute("feeYears", feeYears);
+                        request.getSession().setAttribute("dorms", dorms);
 
-                        Cookie cookie = new Cookie("SESSION",admin.getUsername());
-                        cookie.setMaxAge(24*60*60);
+                        Cookie cookie = new Cookie("SESSION", admin.getUsername());
+                        cookie.setMaxAge(24 * 60 * 60);
                         cookie.setComment("student");
                         //设置作用域，这里设置为根目录以下所有
                         cookie.setPath("/");
                         //将设置好的cookie保存到客户端的浏览器
                         response.addCookie(cookie);
                         // 跳转至首页
-                        request.getRequestDispatcher("admin_student_information.jsp").forward(request,response);
+                        request.getRequestDispatcher("admin_student_information.jsp").forward(request, response);
 
-                    }else{
-                        request.setAttribute("PWDERROR","密码不正确!");
+                    } else {
+                        request.setAttribute("PWDERROR", "密码不正确!");
                         request.getRequestDispatcher("admin_login.jsp").forward(request, response);
                     }
-                }else{
-                    request.setAttribute("NAMEERROR","用户名不存在!");
+                } else {
+                    request.setAttribute("NAMEERROR", "用户名不存在!");
                     request.getRequestDispatcher("admin_login.jsp").forward(request, response);
                 }
 
             } catch (SQLException | ClassNotFoundException throwables) {
                 throwables.printStackTrace();
             }
-        }else{
-            request.setAttribute("CODEERROR","验证码错误!");
+        } else {
+            request.setAttribute("CODEERROR", "验证码错误!");
             request.getRequestDispatcher("admin_login.jsp").forward(request, response);
         }
 

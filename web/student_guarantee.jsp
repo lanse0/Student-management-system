@@ -39,6 +39,17 @@
         <div class="navbar-header">
             <a class="navbar-brand text-primary" href="index.jsp">学生宿舍管理系统${sessionScope.dorm.build}-${sessionScope.dorm.number}</a>
         </div>
+        <%--        手机端导航栏--%>
+        <div class="navbar-toggle collapsed" style="float: left">
+            <ul>
+                <li>
+                    <a href="#">正在登陆的用户为：${sessionScope.studentname}(学生)</a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/LoginOutServlet" onclick="return logout()">退出</a>
+                </li>
+            </ul>
+        </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav justify-content-end">
                 <li class="nav-item active">
@@ -96,7 +107,10 @@
                                 <td>${guarantees.reason}</td>
                                 <td>${guarantees.phoneid}</td>
                                 <td>${guarantees.guaranteetime}</td>
-                                <td>${guarantees.guaranteestaus}</td>
+                                <td>
+                                    <c:if test="${guarantees.guaranteestaus=='1'}">已维修</c:if>
+                                    <c:if test="${guarantees.guaranteestaus=='0'}">未维修</c:if>
+                                </td>
                             </tr>
                         </c:forEach>
                         </tbody>
@@ -108,7 +122,8 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">宿舍号</label>
                         <div class="col-lg-4">
-                            <input type="text" class="form-control" placeholder="输入宿舍号" name="dormitoryid" value="${sessionScope.dorm.number}" disabled>
+                            <input type="text" class="form-control" placeholder="输入宿舍号" value="${sessionScope.dorm.number}" disabled>
+                            <input type="hidden" name="dormitoryid" value="${sessionScope.dorm.id}">
                         </div>
                     </div>
                     <div class="form-group">

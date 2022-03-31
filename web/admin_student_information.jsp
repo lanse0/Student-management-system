@@ -23,7 +23,6 @@
         }
     </script>
 </head>
-
 <body>
 <%
     String dormadminname = (String) request.getSession().getAttribute("dormadminname");
@@ -33,8 +32,19 @@
 %>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
-        <div class="navbar-header">
+        <div class="navbar-header" id="nav">
             <a class="navbar-brand text-primary" href="index.jsp">学生宿舍管理系统(${sessionScope.dormbuildid}栋)</a>
+        </div>
+<%--        手机端导航栏--%>
+        <div class="navbar-toggle collapsed" style="float: left">
+            <ul>
+                <li>
+                    <a href="student_information.jsp">正在登陆的用户为：${sessionScope.dormadminname}(宿管)</a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/LoginOutServlet" onclick="return logout()">退出</a>
+                </li>
+            </ul>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav justify-content-end">
@@ -48,8 +58,28 @@
                 </li>
             </ul>
         </div>
+
     </div>
 </nav>
+<%--<nav class="navbar navbar-inverse navbar-fixed-top">--%>
+<%--    <div class="container-fluid">--%>
+<%--        <div class="navbar-header">--%>
+<%--            <a class="navbar-brand text-primary" href="index.jsp">学生宿舍管理系统(${sessionScope.dormbuildid}栋)</a>--%>
+<%--        </div>--%>
+<%--        <div id="navbar" class="navbar-collapse collapse">--%>
+<%--            <ul class="nav justify-content-end">--%>
+<%--                <li class="nav-item active">--%>
+<%--                    <a class="navbar-right"--%>
+<%--                       href="student_information.jsp">正在登陆的用户为：${sessionScope.dormadminname}(宿管)</a>--%>
+<%--                </li>--%>
+<%--                <li class="nav-item active">--%>
+<%--                    <a class="navbar-right" href="${pageContext.request.contextPath}/LoginOutServlet"--%>
+<%--                       onclick="return logout()">退出</a>--%>
+<%--                </li>--%>
+<%--            </ul>--%>
+<%--        </div>--%>
+<%--    </div>--%>
+<%--</nav>--%>
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar hidden-xs">
@@ -77,58 +107,65 @@
                   action="${pageContext.request.contextPath}/AdminSearchServlet" method="post">
                 <input type="hidden" name="method" value="list">
                 <div class="clearfix sub-header">
-                <div class="form-group form-grou">
-                    <label class="control-label">学号</label>
-                    <div class="col-lg-4">
-                        <input type="text" value="${sessionScope.stuSearch.studentid}" class="form-control form-contro" placeholder="输入学号" name="studentid">
+                    <div class="form-group form-grou">
+                        <label class="control-label">学号</label>
+                        <div class="col-lg-4">
+                            <input type="text" value="${sessionScope.stuSearch.studentid}"
+                                   class="form-control form-contro" placeholder="输入学号" name="studentid">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group form-grou">
-                    <label class="control-label">姓名</label>
-                    <div class="col-lg-4">
-                        <input type="text" value="${sessionScope.stuSearch.studentname}" class="form-control form-contro" placeholder="输入学生姓名" name="studentname">
+                    <div class="form-group form-grou">
+                        <label class="control-label">姓名</label>
+                        <div class="col-lg-4">
+                            <input type="text" value="${sessionScope.stuSearch.studentname}"
+                                   class="form-control form-contro" placeholder="输入学生姓名" name="studentname">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group form-grou">
-                    <label class="control-label">专业</label>
-                    <div class="col-lg-4">
-                        <input type="text" value="${sessionScope.stuSearch.major}" class="form-control form-contro" placeholder="输入学生专业" name="major">
+                    <div class="form-group form-grou">
+                        <label class="control-label">专业</label>
+                        <div class="col-lg-4">
+                            <input type="text" value="${sessionScope.stuSearch.major}" class="form-control form-contro"
+                                   placeholder="输入学生专业" name="major">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group form-grou">
-                    <label class="control-label">院系</label>
-                    <div class="col-lg-4">
-                        <input type="text" value="${sessionScope.stuSearch.department}" class="form-control form-contro" placeholder="输入学生院系" name="department">
+                    <div class="form-group form-grou">
+                        <label class="control-label">院系</label>
+                        <div class="col-lg-4">
+                            <input type="text" value="${sessionScope.stuSearch.department}"
+                                   class="form-control form-contro" placeholder="输入学生院系" name="department">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group form-grou">
-                    <label class="control-label">班级</label>
-                    <div class="col-lg-4">
-                        <input type="text" value="${sessionScope.stuSearch.classes}" class="form-control form-contro" placeholder="输入学生班级" name="classes">
+                    <div class="form-group form-grou">
+                        <label class="control-label">班级</label>
+                        <div class="col-lg-4">
+                            <input type="text" value="${sessionScope.stuSearch.classes}"
+                                   class="form-control form-contro" placeholder="输入学生班级" name="classes">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group form-grou">
-                    <label class="control-label">宿舍</label>
-                    <div class="col-lg-4">
-                        <select name="dormitoryid" class="form-control">
-                            <option value="">请选择</option>
-                            <c:forEach items="${dorms}" var="dorm">
-                                <option value="${dorm.id}" <c:if test="${sessionScope.stuSearch.dorm.id==dorm.id}">selected="selected"</c:if> >${dorm.number}</option>
-                            </c:forEach>
-                        </select>
+                    <div class="form-group form-grou">
+                        <label class="control-label">宿舍</label>
+                        <div class="col-lg-4">
+                            <select name="dormitoryid" class="form-control">
+                                <option value="">请选择</option>
+                                <c:forEach items="${dorms}" var="dorm">
+                                    <option value="${dorm.id}"
+                                            <c:if test="${sessionScope.stuSearch.dorm.id==dorm.id}">selected="selected"</c:if> >${dorm.number}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group form-grou">
-                    <label class="control-label">电话</label>
-                    <div class="col-lg-4">
-                        <input type="text"  value="${sessionScope.stuSearch.phoneid}" class="form-control form-contro" placeholder="输入电话号码" name="phoneid">
+                    <div class="form-group form-grou">
+                        <label class="control-label">电话</label>
+                        <div class="col-lg-4">
+                            <input type="text" value="${sessionScope.stuSearch.phoneid}"
+                                   class="form-control form-contro" placeholder="输入电话号码" name="phoneid">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group form-grou" style="float: right">
-                    <div>
-                        <button type="submit" class="btn btn-default">查询</button>
+                    <div class="form-group form-grou" style="float: right">
+                        <div>
+                            <button type="submit" class="btn btn-default">查询</button>
+                        </div>
                     </div>
-                </div>
                 </div>
                 <div class="table-responsive table-responsiv" style="overflow-x: unset">
                     <table class="table table-striped sub-header">

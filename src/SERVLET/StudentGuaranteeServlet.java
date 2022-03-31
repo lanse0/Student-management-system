@@ -22,13 +22,10 @@ public class StudentGuaranteeServlet extends HttpServlet {
         String goodsname = request.getParameter("goodsname");
         String reason = request.getParameter("reason");
         String phoneid = request.getParameter("phoneid");
-
         guarantee guarantee = new guarantee();
-        if(dormitoryid!=null&&!"".equals(dormitoryid)){
             Dorm dorm = new Dorm();
             dorm.setId(Integer.parseInt(dormitoryid));
-            guarantee.setDorm(dorm);
-        }
+        guarantee.setDorm(dorm);
         guarantee.setStudentname(studentname);
         guarantee.setGoodsname(goodsname);
         guarantee.setReason(reason);
@@ -38,13 +35,10 @@ public class StudentGuaranteeServlet extends HttpServlet {
         ArrayList<guarantee> guarantees = new ArrayList<>();
         try {
             guaranteeDao.submit(guarantee);
-            Dorm dorm = new Dorm();
-            dorm.setNumber(Integer.parseInt(dormitoryid));
             guarantees = guaranteeDao.getGuaranteesByDormitoryid(dorm);
         } catch (SQLException | ClassNotFoundException throwable) {
             throwable.printStackTrace();
         }
-
         request.getSession().setAttribute("guarantee",guarantees);
         request.getRequestDispatcher("student_guarantee.jsp").forward(request,response);
     }

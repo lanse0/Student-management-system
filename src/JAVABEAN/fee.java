@@ -1,12 +1,21 @@
 package JAVABEAN;
 
 public class fee {
+    private String year;
     private String  months;
     private Dorm dorm;
     private String  electricfee;
     private String  electricnum;
     private String  waterfee;
     private String  waternum;
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
 
     public String getMonth() {
         return months;
@@ -59,7 +68,8 @@ public class fee {
     @Override
     public String toString() {
         return "fee{" +
-                "months='" + months + '\'' +
+                "year='" + year + '\'' +
+                ", months='" + months + '\'' +
                 ", dorm=" + dorm +
                 ", electricfee='" + electricfee + '\'' +
                 ", electricnum='" + electricnum + '\'' +

@@ -28,6 +28,16 @@
         <div class="navbar-header">
             <a class="navbar-brand text-primary" href="index.jsp">学生宿舍管理系统</a>
         </div>
+        <div class="navbar-toggle collapsed" style="float: left">
+            <ul>
+                <li>
+                    <a href="student_login.jsp">学生登陆</a>
+                </li>
+                <li>
+                    <a href="admin_login.jsp" onclick="return logout()">管理员登陆</a>
+                </li>
+            </ul>
+        </div>
         <!-- 无用户登录-->
         <c:if test="${sessionScope.studentname == null && sessionScope.dormadminname == null}">
             <div id="navbar" class="navbar-collapse collapse">
