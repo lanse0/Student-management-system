@@ -80,7 +80,6 @@ public class AdminLaterecordServlet extends HttpServlet {
 
     protected void sub(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String dormBuild = (String)request.getSession().getAttribute("dormbuildid");
-//        String studentid = request.getParameter("studentid");
         String studentname = request.getParameter("studentname");
         String dormitoryid = request.getParameter("dormitoryid");
         String letetimeStr = request.getParameter("latetime");
@@ -91,8 +90,6 @@ public class AdminLaterecordServlet extends HttpServlet {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println(letetimeStr);
-        System.out.println(latetime);
         String reason = request.getParameter("reason");
 
         laterecord laterecord = new laterecord();
@@ -104,7 +101,6 @@ public class AdminLaterecordServlet extends HttpServlet {
         laterecord.setReason(reason);
 
         LaterecordDao laterecordDao = new LaterecordDao();
-        ArrayList<laterecord> laterecords = new ArrayList<>();
         try {
             laterecordDao.submit(laterecord);
         } catch (SQLException | ClassNotFoundException throwables) {
