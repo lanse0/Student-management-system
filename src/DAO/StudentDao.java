@@ -124,37 +124,6 @@ public class StudentDao {
         return students;
     }
 
-    // 管理员得到所有学生
-    public ArrayList<student> getAllStudents(String dormBuild) throws SQLException, ClassNotFoundException {
-        ArrayList<student> students = new ArrayList<>();
-        Connection conn = DBUtils.getConnection();
-        String sql = "select * from student s, dorm d where s.dormitoryid = d.id and d.build=?";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setString(1, dormBuild);
-        ResultSet rs = pstmt.executeQuery();
-        while (rs.next()) {
-            student stu = new student();
-            stu.setStudentid(rs.getString("studentid"));
-            stu.setStudentname(rs.getString("studentname"));
-            stu.setMajor(rs.getString("major"));
-            stu.setGender(rs.getString("gender"));
-            stu.setDepartment(rs.getString("department"));
-            stu.setClasses(rs.getString("classes"));
-            Dorm dorm = new Dorm();
-            dorm.setId(rs.getInt("dormitoryid"));
-            dorm.setBuild(rs.getInt("build"));
-            dorm.setNumber(rs.getInt("number"));
-            dorm.setStatus(rs.getString("status"));
-            stu.setDorm(dorm);
-            stu.setPhoneid(rs.getString("phoneid"));
-            stu.setEntrytime(rs.getDate("entrytime"));
-            stu.setUsername(rs.getString("username"));
-            stu.setPassword(rs.getString("password"));
-            students.add(stu);
-        }
-        return students;
-    }
-
     // 根据学号得到名字
     public String getStudentnameByUsername(String username) throws SQLException, ClassNotFoundException {
         Connection conn = DBUtils.getConnection();
@@ -167,85 +136,6 @@ public class StudentDao {
             studentname = rs.getString("studentname");
         }
         return studentname;
-    }
-
-    // 根据条件查询得到学生
-    public ArrayList<student> getStudentsByCondition(student stu,String dormBuild) throws SQLException, ClassNotFoundException {
-        Connection conn = DBUtils.getConnection();
-        String sql = "select * from student s, dorm d where s.dormitoryid = d.id and d.build=?";
-        ArrayList<String> parm = new ArrayList<>();
-        parm.add(dormBuild);
-        ArrayList<student> students = new ArrayList<>();
-
-        String studentid = stu.getStudentid();
-        String studentname = stu.getStudentname();
-        String major = stu.getMajor();
-        String department = stu.getDepartment();
-        String classes = stu.getClasses();
-        Dorm dormitoryid = stu.getDorm();
-        String phoneid = stu.getPhoneid();
-
-        if (studentid != null && !"".equals(studentid)) {
-            sql += " and studentid = ?";
-            parm.add(studentid);
-        }
-        if (studentname != null && !"".equals(studentname)) {
-            sql += " and studentname = ?";
-            parm.add(studentname);
-        }
-        if (major != null && !"".equals(major)) {
-            sql += " and major = ?";
-            parm.add(major);
-        }
-        if (department != null && !"".equals(department)) {
-            sql += " and department = ?";
-            parm.add(department);
-        }
-        if (classes != null && !"".equals(classes)) {
-            sql += " and classes = ?";
-            parm.add(classes);
-        }
-        if (dormitoryid != null) {
-            sql += " and s.dormitoryid = ?";
-            parm.add(dormitoryid.getId() + "");
-        }
-        if (phoneid != null && !"".equals(phoneid)) {
-            sql += " and phoneid = ?";
-            parm.add(phoneid);
-        }
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        System.out.println("sql :" + sql);
-        for (int i = 0; i < parm.size(); i++) {
-            pstmt.setString(i + 1, parm.get(i));
-        }
-
-        ResultSet rs = pstmt.executeQuery();
-
-        while (rs.next()) {
-            student student = new student();
-
-            student.setStudentid(rs.getString("studentid"));
-            student.setStudentname(rs.getString("studentname"));
-            student.setGender(rs.getString("gender"));
-            student.setMajor(rs.getString("major"));
-            student.setDepartment(rs.getString("department"));
-            student.setClasses(rs.getString("classes"));
-            Dorm dorm = new Dorm();
-            dorm.setId(rs.getInt("dormitoryid"));
-            dorm.setBuild(rs.getInt("build"));
-            dorm.setNumber(rs.getInt("number"));
-            dorm.setStatus(rs.getString("status"));
-            student.setDorm(dorm);
-            student.setPhoneid(rs.getString("phoneid"));
-            student.setEntrytime(rs.getDate("entrytime"));
-            student.setUsername(rs.getString("username"));
-            student.setPassword(rs.getString("password"));
-
-            System.out.println("username :" + rs.getString("username"));
-
-            students.add(student);
-        }
-        return students;
     }
 
     // 根据条件查询总记录数
@@ -265,7 +155,7 @@ public class StudentDao {
             sql += " and studentid like '%"+studentid+"%'";
         }
         if (studentname != null && !"".equals(studentname)) {
-            sql += " and studentname like '%"+studentname+"%";
+            sql += " and studentname like '%"+studentname+"%'";
         }
         if (major != null && !"".equals(major)) {
             sql += " and major like '%"+major+"%'";
@@ -318,7 +208,7 @@ public class StudentDao {
             sql += " and studentid like '%"+studentid+"%'";
         }
         if (studentname != null && !"".equals(studentname)) {
-            sql += " and studentname like '%"+studentname+"%";
+            sql += " and studentname like '%"+studentname+"%'";
         }
         if (major != null && !"".equals(major)) {
             sql += " and major like '%"+major+"%'";

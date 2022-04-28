@@ -48,7 +48,6 @@ public class AdminLoginServlet extends HttpServlet {
             FeeDao feeDao = new FeeDao();
             DormDao dormDao = new DormDao();
             try {
-
                 ResultSet rs = adminDao.selectAdmin(username);
                 if (rs.next()) {
                     if (password.equals(rs.getString("password"))) {

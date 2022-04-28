@@ -139,7 +139,7 @@ body {
     opacity: 0.3;
 }
 .page .cards-holder .card header:before {
-    content: '宿舍管理系统';
+    content: 'StudentManSystem';
     font-size: 1rem;
     line-height: 20vw;
     z-index: 2;
